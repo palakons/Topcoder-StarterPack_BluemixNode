@@ -122,7 +122,7 @@ var readDocument = function (params, callback) {
 	db.list({ include_docs: true }
 		, function (err, data) {
 			console.log("Error:", err);
-			console.log("Data:", data);
+			console.log("Data:", data.total_rows);
 
 			callback(err, data);
 		});
@@ -175,13 +175,14 @@ var db = null;
 if (process.env.VCAP_SERVICES) {
 	// Running on Bluemix. Parse the process.env for the port and host that we've been assigned.
 	var env = JSON.parse(process.env.VCAP_SERVICES);
-	console.log('VCAP_SERVICES: ', env);
+	console.log('VCAP_SERVICES: ', JSON.stringify(env,null,2));
 	// Also parse out Cloudant settings.
 	var cloudant = Cloudant(env['cloudantNoSQLDB'][0]['credentials']);
-	console.log(cloudant);
+	//console.log(cloudant);
 
 	cloudant.db.list(function (err, allDbs) {
-		console.log('All my databases: %s', allDbs.join(', '))
+		console.log(err,allDbs);
+		//console.log('All my databases: %s', allDbs.join(', '))
 	});
 }
 createDatabase(function (err, data) {
