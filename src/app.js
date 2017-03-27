@@ -169,17 +169,16 @@ var toneAnalyzer = new ToneAnalyzerV3({
 	version_date: '2016-05-19'
 });
 
+var dbname = 'history';
+var db = null;
 //Obtain the db interface from VCAP_SERVICES
 if (process.env.VCAP_SERVICES) {
 	// Running on Bluemix. Parse the process.env for the port and host that we've been assigned.
 	var env = JSON.parse(process.env.VCAP_SERVICES);
-	var host = process.env.VCAP_APP_HOST;
-	var port = process.env.VCAP_APP_PORT;
-	console.log('VCAP_SERVICES: %s', process.env.VCAP_SERVICES);
+	console.log('VCAP_SERVICES: ', env);
 	// Also parse out Cloudant settings.
 	var cloudant = Cloudant(env['cloudantNoSQLDB'][0]['credentials']);
-	var dbname = 'history';
-	var db = null;
+	console.log(cloudant);
 
 	cloudant.db.list(function (err, allDbs) {
 		console.log('All my databases: %s', allDbs.join(', '))
@@ -219,11 +218,11 @@ app.get('/api/v1/translate', function (req, res, next) {
 			var ele = availableLanguages.languages[i];
 			if (ele.language === textSource.source) {
 				sourceLanguageCodeOK = true;
-				console.log('matched: '+textSource.source);
+				console.log('matched: ' + textSource.source);
 			}
 			if (ele.language === textSource.target) {
 				targetLanguageCodeOK = true;
-				console.log('matched: '+textSource.target);
+				console.log('matched: ' + textSource.target);
 			}
 		}
 		if (!sourceLanguageCodeOK || !targetLanguageCodeOK)
@@ -267,10 +266,10 @@ app.get('/api/v1/translate', function (req, res, next) {
 													if (err)
 														console.log(err);
 													else {
-											console.log('got translatedTone');
+														console.log('got translatedTone');
 														targetTone = tone;
 														// now we have all data
-														var translationOutput = extend({ 'time': Date.now(),'destinationLanguage':langList[textSource.target].name,'sourceLanguage': langList[textSource.source].name}, makeTranslation(textSource.text, textSource.source, textSource.target, sourceTone, models.translations[0].translation, targetTone));
+														var translationOutput = extend({ 'time': Date.now(), 'destinationLanguage': langList[textSource.target].name, 'sourceLanguage': langList[textSource.source].name }, makeTranslation(textSource.text, textSource.source, textSource.target, sourceTone, models.translations[0].translation, targetTone));
 														// push into DB
 														createDocument(translationOutput, function (err, data) {
 															if (err) {
@@ -307,7 +306,7 @@ app.get('/api/v1/history', function (req, res, next) {
 				return b.doc.time - a.doc.time;
 			});
 			for (var i in data.rows) {
-				translations.push({ 'Translation': extend(data.rows[i].doc.Translation,{'destinationLanguage':langList[data.rows[i].doc.Translation.destinationLanguageCode].name}) });
+				translations.push({ 'Translation': extend(data.rows[i].doc.Translation, { 'destinationLanguage': langList[data.rows[i].doc.Translation.destinationLanguageCode].name }) });
 				if (i == limit - 1)
 					break;
 			}

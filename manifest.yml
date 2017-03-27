@@ -2,7 +2,7 @@ applications:
 - memory: 256M
   instances: 1
   domain: mybluemix.net
-  name: sky-bluemix-starter-2
+  name: tc-nizzz-02translate
   host: tc-nizzz-02translate
   disk_quota: 1024M
 declared-services:

@@ -1,13 +1,17 @@
 extend layout
 block content
-.form-group
-  .col-md-1
-  .col-md-1
-    label(for="sourceText") Source String:
-  .col-md-5
-    input#sourceText.form-control(placeholder="Input text goes here...")
-  .col-md-1
-    label(for="sourceText") Target Language:
-  .col-md-1
-    button.btn.btn-default(type="submit" onclick="if($('#sourceText')[0].value != '') {$('#completed-transaction')[0].innerHTML = ''; getHistory('history-content',$('#sourceText')[0].value,'en',$('#destLang')[0].value,'completed-transaction',useAPI); $('#sourceText')[0].value = '';}else{alert('Source String cannot be empty.');}") Translate & Analyze
-  .col-md-1
+  .form-group
+    .col-md-1
+    .col-md-1
+      label(for="sourceText") Source String:
+    .col-md-5
+      input#sourceText.form-control(placeholder="Input text goes here...")
+    .col-md-1
+      label(for="sourceText") Target Language:
+    .col-md-2
+      select#destLang.form-control
+        each lang in languages
+          option(value="#{lang.language}") #{lang.name}
+    .col-md-1
+      button.btn.btn-default(type="submit" onclick="if($('#sourceText')[0].value != '') {$('#completed-transaction')[0].innerHTML = ''; getHistory('history-content',$('#sourceText')[0].value,'en',$('#destLang')[0].value,'completed-transaction',useAPI); $('#sourceText')[0].value = '';}else{alert('Source String cannot be empty.');}") Translate & Analyze
+    .col-md-1
